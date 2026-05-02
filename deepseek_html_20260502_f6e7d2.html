@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>蟹语东方 · 盘锦河蟹跨境数字贸易平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-bg: #f1f8e9;
+            --blue-bg: #e3f2fd;
+            --blue-dark: #0d47a1;
+            --blue-mid: #1976d2;
+            --white: #ffffff;
+            --text-main: #1b5e20;
+            --text-secondary: #2c5f8a;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --transition: 0.3s ease;
+            --max-width: 1200px;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f4fff4 0%, #e3f2fd 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.5;
+            padding-bottom: 30px;
+        }
+
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(46, 125, 50, 0.15);
+        }
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 10px 20px;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-links button {
+            background: transparent;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .nav-links button.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3); }
+
+        .section { display: none; animation: fade 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 轮播 */
+        .carousel {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 20px 0;
+            height: 240px;
+            box-shadow: var(--shadow);
+        }
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 25px;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            color: white;
+            text-align: center;
+        }
+        .carousel-slide.active { opacity: 1; }
+        .carousel-slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
+        }
+        .carousel-text {
+            position: relative;
+            z-index: 2;
+            font-size: 1.7rem;
+            font-weight: bold;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .carousel-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 3;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .dot.active { background: white; transform: scale(1.3); }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 14px;
+            margin: 20px 0;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--radius);
+            padding: 18px 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(46,125,50,0.12);
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .card-icon { font-size: 2.2rem; margin-bottom: 6px; }
+        .card-title { font-weight: 600; font-size: 0.9rem; }
+
+        /* 溯源 */
+        .timeline { position: relative; padding: 20px 0 20px 30px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 17px; top: 0; bottom: 0;
+            width: 3px;
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+        .timeline-step { position: relative; margin-bottom: 20px; padding-left: 22px; }
+        .timeline-dot {
+            position: absolute;
+            left: -7px; top: 5px;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.2);
+        }
+        .timeline-content {
+            background: rgba(255,255,255,0.92);
+            border-radius: 10px;
+            padding: 10px 14px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-light);
+        }
+        .timeline-title { font-weight: 700; color: var(--primary); font-size: 0.95rem; }
+        .timeline-desc { font-size: 0.85rem; color: #555; margin-top: 2px; }
+
+        .search-box { display: flex; gap: 10px; margin: 20px 0; }
+        .search-box input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #c8e6c9;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        .search-box input:focus { border-color: var(--primary); }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+        .btn:hover { background: #1b5e20; }
+        .btn-outline {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-outline:hover { background: var(--primary-bg); }
+
+        /* 商城 */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin: 20px 0;
+        }
+        .product-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .product-card:hover { transform: translateY(-3px); }
+        .product-card h3 { font-size: 1rem; margin: 8px 0; color: var(--text-main); }
+        .price { color: var(--primary); font-weight: 700; font-size: 1.2rem; margin: 6px 0; }
+
+        .cart-icon {
+            font-size: 1.8rem;
+            cursor: pointer;
+            position: relative;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -6px; right: -8px;
+            background: #e53935;
+            color: white;
+            border-radius: 50%;
+            width: 20px; height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* AI客服 */
+        .chat-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 15px;
+            max-width: 650px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            height: 55vh;
+            min-height: 400px;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9fbe7;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .message { margin-bottom: 10px; }
+        .message.user { text-align: right; }
+        .bubble {
+            display: inline-block;
+            max-width: 80%;
+            padding: 8px 14px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            text-align: left;
+            background: #e0e0e0;
+        }
+        .user .bubble { background: var(--primary); color: white; }
+        .bot .bubble { background: #f1f8e9; border: 1px solid #c8e6c9; }
+        .chat-input { display: flex; gap: 8px; }
+        .chat-input input {
+            flex: 1;
+            border-radius: 25px;
+            border: 2px solid #c8e6c9;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        @media (max-width: 600px) {
+            .nav-links button { padding: 6px 10px; font-size: 0.8rem; }
+            .carousel { height: 180px; }
+            .carousel-text { font-size: 1.3rem; }
+            .chat-container { height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🦀 蟹语东方</div>
+            <div class="nav-links" id="navLinks">
+                <button class="active" data-section="home">🏠 首页</button>
+                <button data-section="trace">🔍 溯源</button>
+                <button data-section="shop">🛒 商城</button>
+                <button data-section="chat">🤖 AI客服</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- ==================== 首页 ==================== -->
+        <section id="home" class="section active">
+            <div class="carousel" id="carousel">
+                <!-- 轮播1 -->
+                <div class="carousel-slide active" style="background: linear-gradient(135deg, #43a047, #2e7d32);">
+                    <div class="carousel-text">🌾 稻蟹共生 · 生态溯源</div>
+                </div>
+                <!-- 轮播2 -->
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #1976d2, #0d47a1);">
+                    <div class="carousel-text">🔗 区块链数字护照</div>
+                </div>
+                <!-- 轮播3 -->
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #e65100, #bf360c);">
+                    <div class="carousel-text">🌏 从盘锦稻田到全球餐桌</div>
+                </div>
+                <div class="carousel-dots" id="carouselDots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+
+            <div class="cards">
+                <div class="card" data-nav="trace">
+                    <div class="card-icon">🔎</div>
+                    <div class="card-title">溯源查询</div>
+                </div>
+                <div class="card" data-nav="shop">
+                    <div class="card-icon">🦀</div>
+                    <div class="card-title">精品商城</div>
+                </div>
+                <div class="card" data-nav="chat">
+                    <div class="card-icon">💬</div>
+                    <div class="card-title">AI 多语种客服</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📦</div>
+                    <div class="card-title">冷链物流</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 溯源 ==================== -->
+        <section id="trace" class="section">
+            <h2 style="margin:20px 0 10px; color:var(--primary);">🔗 区块链溯源查询</h2>
+            <div class="search-box">
+                <input type="text" id="traceCodeInput" placeholder="输入溯源码，例如 TEST2025CRAB001" value="TEST2025CRAB001">
+                <button class="btn" id="searchTraceBtn">查询</button>
+            </div>
+            <div id="traceResult"></div>
+        </section>
+
+        <!-- ==================== 商城 ==================== -->
+        <section id="shop" class="section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0;">
+                <h2 style="color:var(--primary);">🛒 河蟹商城</h2>
+                <div class="cart-icon" id="cartIcon">
+                    🛒<span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+                </div>
+            </div>
+            <div class="products" id="productList"></div>
+
+            <!-- 购物车弹窗 -->
+            <div id="cartModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:200; align-items:center; justify-content:center;">
+                <div style="background:white; border-radius:20px; padding:24px; max-width:400px; width:90%;">
+                    <h3>🛒 购物车</h3>
+                    <div id="cartItems" style="max-height:300px; overflow-y:auto; margin:16px 0;"></div>
+                    <div style="display:flex; gap:10px; justify-content:flex-end;">
+                        <button class="btn btn-outline" id="clearCartBtn">清空</button>
+                        <button class="btn" id="orderBtn">模拟下单</button>
+                    </div>
+                    <button style="margin-top:10px; background:transparent; border:none; color:gray; cursor:pointer;" id="closeCartBtn">关闭</button>
+                </div>
+            </div>
+
+            <!-- 订单确认 -->
+            <div id="orderConfirm" style="display:none; background:#e8f5e9; border-radius:12px; padding:16px; margin-top:20px; text-align:center; font-weight:bold; color:var(--primary);"></div>
+        </section>
+
+        <!-- ==================== AI客服 ==================== -->
+        <section id="chat" class="section">
+            <h2 style="margin:20px 0; color:var(--primary);">🤖 AI 智能客服（中英双语）</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">
+                        <div class="bubble">你好！我是蟹语东方AI客服。<br>Hello! I'm CrabTalk assistant. 有什么可以帮您？</div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="输入问题…" onkeypress="if(event.key==='Enter') document.getElementById('sendChatBtn').click()">
+                    <button class="btn" id="sendChatBtn">发送</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        (function() {
+            const sections = {
+                home: document.getElementById('home'),
+                trace: document.getElementById('trace'),
+                shop: document.getElementById('shop'),
+                chat: document.getElementById('chat')
+            };
+            const navButtons = document.querySelectorAll('#navLinks button');
+
+            // 导航切换
+            function switchSection(id) {
+                Object.values(sections).forEach(s => s.classList.remove('active'));
+                if (sections[id]) sections[id].classList.add('active');
+                navButtons.forEach(b => b.classList.remove('active'));
+                const active = Array.from(navButtons).find(b => b.dataset.section === id);
+                if (active) active.classList.add('active');
+            }
+
+            navButtons.forEach(b => b.addEventListener('click', () => switchSection(b.dataset.section)));
+            document.querySelectorAll('.card[data-nav]').forEach(c => c.addEventListener('click', () => switchSection(c.dataset.nav)));
+
+            // ============ 轮播 ============
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('#carouselDots .dot');
+            let current = 0;
+            const totalSlides = slides.length;
+
+            function showSlide(i) {
+                slides.forEach(s => s.classList.remove('active'));
+                dots.forEach(d => d.classList.remove('active'));
+                current = i;
+                slides[current].classList.add('active');
+                dots[current].classList.add('active');
+            }
+
+            setInterval(() => {
+                current = (current + 1) % totalSlides;
+                showSlide(current);
+            }, 3500);
+
+            dots.forEach((d, i) => d.addEventListener('click', () => showSlide(i)));
+
+            // ============ 溯源 ============
+            const traceData = {
+                'TEST2025CRAB001': {
+                    product: '盘锦精品母蟹（2.5两/只）',
+                    origin: '辽宁省盘锦市大洼区稻田蟹养殖基地',
+                    date: '2025-09-15',
+                    steps: [
+                        { title: '① 养殖数据采集', desc: 'IoT自动采集：水温22°C，pH 7.8，溶氧6.2mg/L，投喂正常' },
+                        { title: '② 数据上链存证', desc: '区块高度#184423，所有养殖数据写入区块链，不可篡改' },
+                        { title: '③ SGS质检数据上链', desc: '第三方检测：重金属未检出、兽药残留未检出、致病菌阴性' },
+                        { title: '④ 冷链温控实时上传', desc: '全程0~4℃冷链运输，每15分钟自动上传温度与位置数据' },
+                        { title: '⑤ 生成唯一溯源二维码', desc: '一蟹一码「数字护照」，全链路数据绑定完成' },
+                        { title: '⑥ 出口报关（大连海关）', desc: '通过大连海关绿色通道，即报即验、快速验放' },
+                        { title: '⑦ 海外用户扫码查看全链路', desc: '消费者扫码可查看塘口实景、检测报告、冷链温度曲线' }
+                    ]
+                }
+            };
+
+            document.getElementById('searchTraceBtn').addEventListener('click', () => {
+                const code = document.getElementById('traceCodeInput').value.trim();
+                const res = document.getElementById('traceResult');
+                const data = traceData[code];
+
+                if (!data) {
+                    res.innerHTML = '<p style="color:#c62828;margin-top:15px;">⚠️ 未找到该溯源码，请尝试输入 <b>TEST2025CRAB001</b></p>';
+                    return;
+                }
+
+                let html = `<h3 style="margin-top:15px;">📦 ${data.product}</h3>`;
+                html += `<p style="color:#666;font-size:0.9rem;">📍 ${data.origin} | 📅 出塘日期：${data.date}</p>`;
+                html += '<div class="timeline">';
+                data.steps.forEach(step => {
+                    html += `
+                    <div class="timeline-step">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">${step.title}</div>
+                            <div class="timeline-desc">${step.desc}</div>
+                        </div>
+                    </div>`;
+                });
+                html += '</div>';
+                html += '<p style="text-align:center;margin-top:15px;color:#2e7d32;font-weight:bold;">🔒 区块链存证 · 全程不可篡改 · 从塘口到餐桌</p>';
+                res.innerHTML = html;
+            });
+
+            // ============ 商城 ============
+            const products = [
+                { id: 1, name: '精品母蟹 (2.5两)', price: 128, emoji: '🦀' },
+                { id: 2, name: '冬储活蟹礼盒 (3两)', price: 198, emoji: '🎁' },
+                { id: 3, name: '蟹黄酱联名款', price: 68, emoji: '🫙' }
+            ];
+
+            let cart = [];
+            const prodDiv = document.getElementById('productList');
+            const badge = document.getElementById('cartBadge');
+            const modal = document.getElementById('cartModal');
+            const cartItems = document.getElementById('cartItems');
+            const confirmDiv = document.getElementById('orderConfirm');
+
+            function renderProducts() {
+                prodDiv.innerHTML = products.map(p => `
+                    <div class="product-card">
+                        <div style="font-size:4rem;text-align:center;">${p.emoji}</div>
+                        <h3>${p.name}</h3>
+                        <div class="price">¥${p.price}</div>
+                        <button class="btn add-cart" data-id="${p.id}">加入购物车</button>
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.add-cart').forEach(b =>
+                    b.addEventListener('click', e => {
+                        const p = products.find(x => x.id == e.target.dataset.id);
+                        cart.push({ ...p });
+                        updateBadge();
+                    })
+                );
+            }
+
+            function updateBadge() {
+                badge.style.display = cart.length ? 'flex' : 'none';
+                badge.textContent = cart.length;
+            }
+
+            function renderCart() {
+                if (!cart.length) {
+                    cartItems.innerHTML = '<p style="color:#999;">购物车是空的</p>';
+                    return;
+                }
+                cartItems.innerHTML = cart.map((item, i) =>
+                    `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;">
+                        <span>${item.emoji} ${item.name}</span>
+                        <span>¥${item.price}</span>
+                        <button data-idx="${i}" style="color:#e53935;background:none;border:none;cursor:pointer;font-size:1.1rem;">✕</button>
+                    </div>`
+                ).join('');
+
+                document.querySelectorAll('[data-idx]').forEach(b =>
+                    b.addEventListener('click', e => {
+                        cart.splice(e.target.dataset.idx, 1);
+                        renderCart();
+                        updateBadge();
+                    })
+                );
+            }
+
+            document.getElementById('cartIcon').addEventListener('click', () => {
+                renderCart();
+                modal.style.display = 'flex';
+            });
+
+            document.getElementById('closeCartBtn').addEventListener('click', () => modal.style.display = 'none');
+
+            document.getElementById('clearCartBtn').addEventListener('click', () => {
+                cart = [];
+                updateBadge();
+                renderCart();
+            });
+
+            document.getElementById('orderBtn').addEventListener('click', () => {
+                if (!cart.length) {
+                    alert('购物车是空的，请先添加商品。');
+                    return;
+                }
+                const total = cart.reduce((sum, p) => sum + p.price, 0);
+                cart = [];
+                updateBadge();
+                modal.style.display = 'none';
+                confirmDiv.style.display = 'block';
+                confirmDiv.innerHTML = `✅ 订单已生成！（演示模式）<br>📦 ${cart.length + 1} 件商品 · 合计 ¥${total}<br>🚛 全程0-4℃冷链配送中…`;
+                setTimeout(() => confirmDiv.style.display = 'none', 5000);
+            });
+
+            renderProducts();
+
+            // ============ AI客服 ============
+            const msgDiv = document.getElementById('chatMessages');
+            const knowledgeBase = {
+                '养殖': '盘锦河蟹采用"稻蟹共生"生态模式——水稻护蟹、蟹吃虫饵、蟹粪肥田。IoT设备实时监测水温、pH值并自动上链存证。',
+                '溯源': '每一只河蟹都拥有唯一的区块链"数字护照"，扫码可查看从养殖塘口→SGS质检→冷链物流→海关报关的全链路信息。',
+                '冷链': '全程0-4℃冷链运输，保温箱内植入温控记录仪，每15分钟自动上传温度数据至区块链。空运48小时抵达新加坡。',
+                '价格': '精品母蟹（2.5两）约¥128/只，冬储活蟹礼盒（3两）约¥198，蟹黄酱联名款约¥68。海外消费者可通过独立站下单。',
+                '出口': '盘锦河蟹通过大连海关绿色通道出口，即报即验。已对接新加坡SFA进口标准，SGS质检合格。',
+                'hello': 'Hello! Panjin river crabs are raised in rice-crab symbiosis. Each crab has a unique blockchain QR code. Cold chain: 0-4°C, 48h air delivery to Singapore.',
+                'こんにちは': '盤錦の川蟹は「稲蟹共生」生態モデルで育成。ブロックチェーンQRコードで完全なトレーサビリティ。',
+            };
+
+            function addMsg(text, sender) {
+                const d = document.createElement('div');
+                d.className = `message ${sender}`;
+                d.innerHTML = `<div class="bubble">${text}</div>`;
+                msgDiv.appendChild(d);
+                msgDiv.scrollTop = msgDiv.scrollHeight;
+            }
+
+            function getReply(question) {
+                const q = question.toLowerCase();
+                if (q.includes('养殖') || q.includes('稻蟹') || q.includes('farm')) return knowledgeBase['养殖'];
+                if (q.includes('溯源') || q.includes('区块链') || q.includes('trace') || q.includes('blockchain')) return knowledgeBase['溯源'];
+                if (q.includes('冷链') || q.includes('物流') || q.includes('温度') || q.includes('cold')) return knowledgeBase['冷链'];
+                if (q.includes('价格') || q.includes('多少钱') || q.includes('price')) return knowledgeBase['价格'];
+                if (q.includes('出口') || q.includes('海关') || q.includes('export') || q.includes('customs')) return knowledgeBase['出口'];
+                if (q.includes('hello') || q.includes('hi') || q.includes('english')) return knowledgeBase['hello'];
+                if (q.includes('こんにちは') || q.includes('日本語')) return knowledgeBase['こんにちは'];
+                return '感谢您的咨询！🦀\n\n您可以问我：\n• 养殖模式（稻蟹共生）\n• 区块链溯源\n• 冷链物流\n• 出口报关\n• 产品价格\n\nYou can also ask in English!';
+            }
+
+            document.getElementById('sendChatBtn').addEventListener('click', () => {
+                const input = document.getElementById('chatInput');
+                const t = input.value.trim();
+                if (!t) return;
+                addMsg(t, 'user');
+                input.value = '';
+                setTimeout(() => addMsg(getReply(t), 'bot'), 500);
+            });
+
+            // 默认展示首页
+            switchSection('home');
+        })();
+    </script>
+</body>
+</html>
